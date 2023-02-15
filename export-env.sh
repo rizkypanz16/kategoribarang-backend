@@ -1,5 +1,0 @@
-#!/bin/bash
-export KATEGORI_DBHOST=13.229.43.83
-export KATEGORI_DBUSER=kelompok3
-export KATEGORI_DBPASSWORD=k3l0mp0k3
-export KATEGORI_DBNAME=gudang

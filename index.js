@@ -3,6 +3,7 @@ const md5 = require('md5');
 const app = express();
 var bodyParser = require('body-parser');
 const mysql = require('mysql');
+const env = require('dotenv').config();
 const port = 3001;
 
 // CREATE DATETIME NOW()

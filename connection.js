@@ -1,5 +1,6 @@
+const env = require('dotenv').config();
 const mysql = require('mysql');
-var filename = " File DB Connection";
+
 dbdata = {
   host: process.env.KATEGORI_DBHOST,
   user: process.env.KATEGORI_DBUSER,
@@ -13,6 +14,5 @@ connection.connect(function(err){
 });
 
 module.exports = {
-    connection : mysql.createConnection(dbdata),
-    name : filename
+    connection : mysql.createConnection(dbdata)
 }

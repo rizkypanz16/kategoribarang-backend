@@ -35,7 +35,7 @@ var connection = config.connection;
 
 // GET ALL USER DATA
 app.get('/', (req, res) => {
-  res.send("STOK BARANG API");
+  res.send("STOKBARANG API");
 });
 
 app.get('/api/kategori', (req, res) => {
@@ -174,7 +174,7 @@ app.post("/api/databarang", (req, res) => {
     created_at: req.body.created_at,
     updated_at: req.body.updated_at,
   };
-
+  
   connection.query(
     "INSERT INTO data_barang SET ?",
     dataInputan,

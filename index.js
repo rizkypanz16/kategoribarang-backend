@@ -33,10 +33,13 @@ var connection = config.connection;
 
 // =========================================================================================================================================
 
+
 // GET ALL USER DATA
 app.get('/', (req, res) => {
   res.send("STOKBARANG API");
 });
+
+// =========================================================================================================================================
 
 app.get('/api/kategori', (req, res) => {
   connection.query("SELECT id_kategori, kategori, deskripsi FROM kategori_barang", (error, results, fields) => { 
@@ -217,6 +220,77 @@ app.put("/api/databarang/:id_barang", (req, res) => {
     }
   );
 });
+
+// =========================================================================================================================================
+
+app.get('/api/histori', (req, res) => {
+  connection.query("SELECT id_transaksi, id_barang, type, date, nama, kuantitas FROM histori_barang", (error, results, fields) => { 
+    if (error) throw error;
+    res.status(200);
+    res.json(
+      { 
+          status: "OK",
+          data: results
+      }
+    )
+  });
+});
+
+app.post("/api/histori", (req, res) => {
+  const v_id_transaksi = req.body.v_id_transaksi;
+  const idBarang = req.body.id_barang;
+  const typeHistori = req.body.v_type;
+  const v_date = req.body.v_date;
+  const v_nama = req.body.v_nama;
+  const v_kuantitas = req.body.v_kuantitas;
+
+  if (typeHistori === "KELUAR") {
+    connection.query(
+      `INSERT INTO histori_barang (id_transaksi, id_barang, type, date, nama, kuantitas) VALUES ('${v_id_transaksi}', '${idBarang}', '${typeHistori}', '${v_date}', '${v_nama}', '${v_kuantitas}');`,
+      (error, results, fields) => {
+        if (error) throw error;
+        connection.query(
+          `UPDATE data_barang SET jumlah_barang = jumlah_barang - ${v_kuantitas} WHERE id_barang = '${idBarang}'`,
+          (error, results, fields) => {
+            if (error) throw error;
+            res.send({ status : "OK" });
+          }
+        );
+      }
+    );
+  } else if (typeHistori === "MASUK") {
+    connection.query(
+      `INSERT INTO histori_barang (id_transaksi, id_barang, type, date, nama, kuantitas) VALUES ('${v_id_transaksi}', '${idBarang}', '${typeHistori}', '${v_date}', '${v_nama}', '${v_kuantitas}');`,
+      (error, results, fields) => {
+        if (error) throw error;
+        connection.query(
+          `UPDATE data_barang SET jumlah_barang = jumlah_barang + ${v_kuantitas} WHERE id_barang = '${idBarang}'`,
+          (error, results, fields) => {
+            if (error) throw error;
+            res.send({ status : "OK" });
+          }
+        );
+      }
+    );
+  } else {
+    res.status(400).send("Type Histori tidak valid!");
+  }
+});
+
+app.get('/api/histori/:id', (req, res) => {
+  connection.query("select histori_barang.id_transaksi, data_barang.nama_barang, data_barang.foto_barang, histori_barang.type, histori_barang.date, histori_barang.nama, histori_barang.kuantitas from data_barang left join histori_barang on histori_barang.id_barang = data_barang.id_barang WHERE data_barang.id_barang = '"+req.params.id+"'", (error, results, fields) => { 
+    if (error) throw error;
+    res.status(200);
+    res.json(
+      { 
+          status: "OK",
+          data: results
+      }
+    )
+  });
+});
+
+// =========================================================================================================================================
 
 app.listen(port, () => {
   console.log("== SERVICE-AUTH ==");

@@ -278,7 +278,7 @@ app.post("/api/histori", (req, res) => {
 });
 
 app.get('/api/histori/:id', (req, res) => {
-  connection.query("select histori_barang.id_transaksi, data_barang.nama_barang, data_barang.foto_barang, histori_barang.type, histori_barang.date, histori_barang.nama, histori_barang.kuantitas from data_barang left join histori_barang on histori_barang.id_barang = data_barang.id_barang WHERE data_barang.id_barang = '"+req.params.id+"'", (error, results, fields) => { 
+  connection.query("select histori_barang.id_transaksi, data_barang.nama_barang, data_barang.foto_barang, histori_barang.type, histori_barang.date, histori_barang.nama, histori_barang.kuantitas from data_barang right join histori_barang on histori_barang.id_barang = data_barang.id_barang WHERE data_barang.id_barang = '"+req.params.id+"'", (error, results, fields) => { 
     if (error) throw error;
     res.status(200);
     res.json(

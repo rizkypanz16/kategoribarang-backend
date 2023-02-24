@@ -140,7 +140,7 @@ app.delete('/api/kategori/:id', (req, res) => {
 
 app.get("/api/databarang", (req, res) => {
   connection.query(
-    "SELECT * FROM data_barang",
+    "SELECT * FROM data_barang JOIN kategori_barang ON data_barang.id_kategori = kategori_barang.id_kategori",
     function (error, results, fields) {
       // console.log(error)
       res.send(results);
@@ -160,7 +160,7 @@ app.get("/api/databarang/:id_barang", (req, res) => {
 
 app.post("/api/databarang", (req, res) => {
   let dataInputan = {
-    id_barang: req.body.id_barang,
+    id_barang: md5(req.body.id_barang),
     id_kategori: req.body.id_kategori,
     nama_barang: req.body.nama_barang,
     foto_barang: req.body.foto_barang,

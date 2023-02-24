@@ -224,7 +224,7 @@ app.put("/api/databarang/:id_barang", (req, res) => {
 // =========================================================================================================================================
 
 app.get('/api/histori', (req, res) => {
-  connection.query("SELECT id_transaksi, id_barang, type, date, nama, kuantitas FROM histori_barang", (error, results, fields) => { 
+  connection.query("SELECT * FROM histori_barang JOIN data_barang ON histori_barang.id_barang = data_barang.id_barang", (error, results, fields) => { 
     if (error) throw error;
     res.status(200);
     res.json(

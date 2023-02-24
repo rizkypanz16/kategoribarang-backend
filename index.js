@@ -34,6 +34,10 @@ var connection = config.connection;
 // =========================================================================================================================================
 
 // GET ALL USER DATA
+app.get('/', (req, res) => {
+  res.send("STOK BARANG API");
+});
+
 app.get('/api/kategori', (req, res) => {
   connection.query("SELECT id_kategori, kategori, deskripsi FROM kategori_barang", (error, results, fields) => { 
     if (error) throw error;

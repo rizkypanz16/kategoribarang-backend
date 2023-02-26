@@ -1,5 +1,5 @@
 FROM node:latest
-WORKDIR /kategori-barang-backend
+WORKDIR /stokbarang-backend
 
 COPY package*.json ./
 RUN npm install

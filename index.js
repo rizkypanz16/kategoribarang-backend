@@ -6,17 +6,36 @@ const mysql = require('mysql');
 const env = require('dotenv').config();
 const port = 3001;
 const cors = require("cors");
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+const upload = multer({ storage: storage });
 
 // CREATE DATETIME NOW()
-const now = new Date();
-const datetime = now.toLocaleString('en-US', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit'
-});
+var date = new Date();
+date = date.getUTCFullYear() + '-' +
+    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+    ('00' + date.getUTCDate()).slice(-2) + ' ' + 
+    ('00' + date.getUTCHours()).slice(-2) + ':' + 
+    ('00' + date.getUTCMinutes()).slice(-2) + ':' + 
+    ('00' + date.getUTCSeconds()).slice(-2);
+// console.log(date);
+
+// const datetime = now.toLocaleString('en-US', {
+//   year: 'numeric',
+//   month: '2-digit',
+//   day: '2-digit',
+//   hour: '2-digit',
+//   minute: '2-digit',
+//   second: '2-digit'
+// });
+
 
 // body: x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,6 +48,7 @@ app.use(cors());
 // IMPORT CONNECTION MODULE
 const config = require('./connection.js');
 const { urlencoded } = require('express');
+
 var connection = config.connection;
 
 // =========================================================================================================================================
@@ -165,16 +185,16 @@ app.get("/api/databarang/:id_barang", (req, res) => {
   );
 });
 
-app.post("/api/databarang", (req, res) => {
+app.post("/api/databarang", upload.single('foto_barang'), (req, res) => {
   let dataInputan = {
     id_barang: md5(req.body.id_barang),
     id_kategori: req.body.id_kategori,
     nama_barang: req.body.nama_barang,
-    foto_barang: req.body.foto_barang,
+    foto_barang: req.file.originalname,
     deskripsi: req.body.deskripsi,
     jumlah_barang: req.body.jumlah_barang,
     harga_barang: req.body.harga_barang,
-    created_at: req.body.created_at,
+    created_at: date,
     updated_at: req.body.updated_at,
   };
   
@@ -183,7 +203,13 @@ app.post("/api/databarang", (req, res) => {
     dataInputan,
     (error, results, fields) => {
       // console.log(error);
-      res.send(results);
+      // res.send(results);
+      res.json(
+        { 
+            status: "OK",
+            data: []
+        }
+      )
     }
   );
 });
@@ -193,7 +219,13 @@ app.delete("/api/databarang/:id_barang", (req, res) => {
     `DELETE FROM data_barang WHERE id_barang = '${req.params.id_barang}'`,
     (error, results) => {
       // console.log(error);
-      res.send(results);
+      // res.send(results);
+      res.json(
+        { 
+            status: "OK",
+            data: []
+        }
+      )
     }
   );
 });
@@ -216,7 +248,13 @@ app.put("/api/databarang/:id_barang", (req, res) => {
     'UPDATE data_barang SET id_barang =? , id_kategori=? , nama_barang =? , foto_barang =?, deskripsi =? , jumlah_barang =? , harga_barang =?, created_at=?,  updated_at=? WHERE id_barang =?',[id_barang,id_kategori,nama_barang,foto_barang,deskripsi,jumlah_barang,harga_barang,created_at,updated_at,id_barang],
     (error, results) => {
       // console.log(error);
-      res.send(results);
+      // res.send(results);
+      res.json(
+        { 
+            status: "OK",
+            data: []
+        }
+      )
     }
   );
 });
@@ -291,6 +329,18 @@ app.get('/api/histori/:id', (req, res) => {
 });
 
 // =========================================================================================================================================
+
+// app.post('/api/register', upload.single('foto_barang'), (req, res) => {
+//     const name = req.body.name;
+//     const foto_barang = req.file.originalname;
+
+//     res.json(
+//       { 
+//         status: "OK",
+//         data: req.file.originalname
+//       }
+//     );
+// });
 
 app.listen(port, () => {
   console.log("== SERVICE-AUTH ==");

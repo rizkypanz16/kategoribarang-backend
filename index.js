@@ -70,6 +70,7 @@ app.get('/api', (req, res) => {
 // =========================================================================================================================================
 
 app.get('/api/kategoribarang', (req, res) => {
+  console.log(req.query.c)
   connection.query("SELECT id_kategori, kategori, deskripsi FROM kategori_barang", (error, results, fields) => { 
     if (error) throw error;
     res.status(200);
@@ -84,6 +85,19 @@ app.get('/api/kategoribarang', (req, res) => {
 
 // GET USER DATA BY ID
 app.get('/api/kategoribarang/:id', (req, res) => {
+  var parameter = req.params.id;
+  if(parameter == "count"){
+    connection.query("SELECT COUNT(*) AS count FROM kategori_barang", (error, results, fields) => { 
+      if (error) throw error;
+      res.status(200);
+      res.json(
+        { 
+            status: "OK",
+            data: results
+        }
+      )
+    });
+  }else{
     connection.query("SELECT id_kategori, kategori, deskripsi FROM kategori_barang WHERE id_kategori = '"+req.params.id+"'", (error, results, fields) => { 
       if (error) throw error;
       res.status(200);
@@ -94,6 +108,7 @@ app.get('/api/kategoribarang/:id', (req, res) => {
         }
       )
     });
+  }
 });
 
 // POST DATA USER TYPE RAW JSON
@@ -185,14 +200,39 @@ app.get("/api/barang", (req, res) => {
   );
 });
 
-app.get("/api/barang/:id_barang", (req, res) => {
-  connection.query(
-    "SELECT * FROM data_barang WHERE id_barang='"+req.params.id_barang+"'",
-    function (error, results, fields) {
-      // console.log(error)
-      res.send(results);
-    }
-  );
+app.get("/api/barang/:id", (req, res) => {
+  var parameter = req.params.id;
+  if(parameter == "count"){
+    connection.query("SELECT COUNT(*) AS count FROM data_barang", (error, results, fields) => { 
+      if (error) throw error;
+      res.status(200);
+      res.json(
+        { 
+            status: "OK",
+            data: results
+        }
+      )
+    });
+  }else{
+    connection.query("SELECT * FROM data_barang WHERE id_barang = '"+req.params.id+"'", (error, results, fields) => { 
+      if (error) throw error;
+      res.status(200);
+      res.json(
+        { 
+            status: "OK",
+            data: results
+        }
+      )
+    });
+  }
+
+  // connection.query(
+  //   "SELECT * FROM data_barang WHERE id_barang='"+req.params.id_barang+"'",
+  //   function (error, results, fields) {
+  //     // console.log(error)
+  //     res.send(results);
+  //   }
+  // );
 });
 
 app.post("/api/barang", upload.single('foto_barang'), (req, res) => {
@@ -323,16 +363,30 @@ app.post("/api/historibarang", (req, res) => {
 });
 
 app.get('/api/historibarang/:id', (req, res) => {
-  connection.query("select histori_barang.id_transaksi, data_barang.nama_barang, data_barang.foto_barang, histori_barang.type, histori_barang.date, histori_barang.nama, histori_barang.kuantitas from data_barang right join histori_barang on histori_barang.id_barang = data_barang.id_barang WHERE data_barang.id_barang = '"+req.params.id+"'", (error, results, fields) => { 
-    if (error) throw error;
-    res.status(200);
-    res.json(
-      { 
-          status: "OK",
-          data: results
-      }
-    )
-  });
+  var parameter = req.params.id;
+  if(parameter == "count"){
+    connection.query("SELECT COUNT(*) AS count FROM histori_barang", (error, results, fields) => { 
+      if (error) throw error;
+      res.status(200);
+      res.json(
+        { 
+            status: "OK",
+            data: results
+        }
+      )
+    });
+  }else{
+    connection.query("select histori_barang.id_transaksi, data_barang.nama_barang, data_barang.foto_barang, histori_barang.type, histori_barang.date, histori_barang.nama, histori_barang.kuantitas from data_barang right join histori_barang on histori_barang.id_barang = data_barang.id_barang WHERE data_barang.id_barang = '"+req.params.id+"'", (error, results, fields) => { 
+      if (error) throw error;
+      res.status(200);
+      res.json(
+        { 
+            status: "OK",
+            data: results
+        }
+      )
+    });
+  }
 });
 
 // =========================================================================================================================================

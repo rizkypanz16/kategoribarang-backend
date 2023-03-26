@@ -70,7 +70,6 @@ app.get('/api', (req, res) => {
 // =========================================================================================================================================
 
 app.get('/api/kategoribarang', (req, res) => {
-  console.log(req.query.c)
   connection.query("SELECT id_kategori, kategori, deskripsi FROM kategori_barang", (error, results, fields) => { 
     if (error) throw error;
     res.status(200);

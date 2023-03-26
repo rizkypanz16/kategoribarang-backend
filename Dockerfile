@@ -1,6 +1,8 @@
 FROM node:latest
 WORKDIR /stokbarang-backend
 
+RUN mkdir -p uploads
+
 COPY package*.json ./
 RUN npm install
 

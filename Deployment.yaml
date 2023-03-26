@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: stokbarang-pv-volume
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/html
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stokbarang-pv-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stokbarang-backend
+  labels:
+    app: stokbarang-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stokbarang-backend
+  template:
+    metadata:
+      labels:
+        app: stokbarang-backend
+    spec:
+      volumes:
+        - name: stokbarang-storage
+          persistentVolumeClaim:
+            claimName: stokbarang-pv-claim
+      containers:
+        - name: stokbarang-backend
+          image: rizkypanz/stokbarang-backend:v1.0
+          ports:
+            - containerPort: 3001
+          volumeMounts:
+            - name: stokbarang-storage
+              mountPath: /stokbarang-backend/uploads
+			  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stokbarang-backend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: stokbarang-backend
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001

@@ -11,7 +11,6 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: /mnt/html
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,7 +23,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,8 +51,7 @@ spec:
             - containerPort: 3001
           volumeMounts:
             - name: stokbarang-storage
-              mountPath: /stokbarang-backend/uploads
-			  
+              mountPath: /stokbarang-backend/uploads		  
 ---
 apiVersion: v1
 kind: Service
